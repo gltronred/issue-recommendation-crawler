@@ -33,10 +33,12 @@ JSON output
 ````json
 
 {
-  "id": "gltronred/issue-recommendation-crawler/1"
+  "id": "gltronred/issue-recommendation-crawler/1",
   "owner": "gltronred",
   "project": "issue-recommendation-crawler",
   "number": 1,
+  "title": "Some Title, e.g. Lord",
+  "body": "Fat body",
   "languages": [
     "haskell",
     "bash",
