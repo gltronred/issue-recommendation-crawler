@@ -33,14 +33,14 @@ JSON output
 ````json
 
 {
-  "issue": {
-    "owner": "gltronred",
-    "repo": "issue-recommendation-crawler",
-    "id": 1 },
-  "languages": {
-    "haskell": 95.1,
-    "bash": 4.8,
-    "unknown": 0.1 },
+  "id": "gltronred/issue-recommendation-crawler/1"
+  "owner": "gltronred",
+  "project": "issue-recommendation-crawler",
+  "number": 1,
+  "languages": [
+    "haskell",
+    "bash",
+    "unknown"],
   "frameworks": [
     "aeson",
     "github" ],
