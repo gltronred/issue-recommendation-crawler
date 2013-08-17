@@ -62,11 +62,11 @@ JSON output
 * @issue -- describes issue address (<owner>/<project>/issues/<id>)
 * @languages
 * @frameworks
-* @size
+* @size -- project size (Kb)
 * @stars
 * @watches
-* @discussion
+* @discussion -- discussion length
 * @quality
 * @due
-* @discusses
+* @discusses -- how many people discusses issue
 * @tags
