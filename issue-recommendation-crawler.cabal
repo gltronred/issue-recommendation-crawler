@@ -26,7 +26,8 @@ executable issue-recommendation-crawler
                        http-conduit,
                        http-types,
                        time >= 1.4,
-                       syb
+                       syb,
+                       pcre-light
 
 executable issue-recommendation-service
   hs-source-dirs:      src
@@ -46,5 +47,6 @@ executable issue-recommendation-service
                        conduit,
                        attoparsec-conduit,
                        transformers,
-                       lifted-base
+                       lifted-base,
+                       pcre-light
 

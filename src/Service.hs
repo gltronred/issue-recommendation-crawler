@@ -1,6 +1,7 @@
-{-# LANGUAGE OverloadedStrings, DeriveDataTypeable #-}
+{-# LANGUAGE OverloadedStrings, DeriveDataTypeable, ImplicitParams #-}
 
 import Types
+import UserInfo
 
 import           Control.Exception        (SomeException(..), Exception(..))
 import           Control.Exception.Lifted (handle)
@@ -49,6 +50,12 @@ invalidJson ex = return $ responseLBS
 
 -- Application-specific logic would go here.
 modValue :: UserIn -> IO User
-modValue input = do
+modValue input = let
+  ?verbose = 0
+  in do
     putStrLn $ "Get user info for " ++ show input
-    return $ User (S.fromList ["haskell", "bash", "unknown"]) (S.fromList ["aeson", "bytestring"])
+    ui <- userInfo (userInName input) (userInToken input)
+    return $ case ui of
+      Nothing -> User S.empty S.empty
+      Just u -> u
+

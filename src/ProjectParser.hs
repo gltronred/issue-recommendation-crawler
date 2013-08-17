@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings, DeriveGeneric, ImplicitParams #-}
 
-module ProjectParser where
+module ProjectParser (projectInfo, projectIssueList, projectLangs) where
 
 import Types
 import Network
@@ -39,10 +39,10 @@ projectInfo owner' proj' = let
         Right i -> return i
       els <- projectLangs owner' proj'
       ls <- case els of
-        Left err -> do
-          BS.putStrLn err
+        Nothing -> do
+          putStrLn "Some error while getting langs"
           return M.empty
-        Right l -> return l
+        Just l -> return l
       return $ Right $ Project is ls S.empty (size pr) (-1) (watchers pr)
 
 data Label = Label { name :: BS.ByteString } deriving (Eq,Show,Generic,Ord)
@@ -76,13 +76,10 @@ projectIssueList owner' proj' mpage total = let
           --   Nothing -> 
           return $ Right $ map (\(IR n t b c mm ls) -> Issue n t b c 0.0 (getDue mm) (-1) $ S.map name ls) is
 
-projectLangs :: (?verbose :: Int) => BS.ByteString -> BS.ByteString -> IO (Either BS.ByteString (M.Map BS.ByteString Double))
+projectLangs :: (?verbose :: Int) => BS.ByteString -> BS.ByteString -> IO (Maybe (M.Map BS.ByteString Double))
 projectLangs owner' proj' = let
   owner = BS.unpack owner'
   proj = BS.unpack proj'
   in do
-    mls <- generalNetwork ("repos/" ++ owner ++ "/" ++ proj ++ "/languages") Nothing Nothing (return . Just)
-    case mls of
-      Nothing -> return $ Left "Some error occured"
-      Just ls -> return $ Right ls
+    generalNetwork ("repos/" ++ owner ++ "/" ++ proj ++ "/languages") Nothing Nothing (return . Just)
 
