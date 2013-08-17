@@ -28,10 +28,12 @@ generalNetwork path params rErr parseResponse = do
     200 -> parseResponse $ fromJust $ decode $ responseBody result
     _ -> return rErr
 
-sendSolr :: (ToJSON a) => a -> IO ()
+sendSolr :: (ToJSON a, ?verbose :: Int) => a -> IO ()
 sendSolr x = do
   req' <- parseUrl $ solrUrl ++ "update/json?commit=true"
-  let req = req' { responseTimeout = Just 20000000, requestBody = RequestBodyLBS $ encode x }
+  let req = req' { method = "POST", responseTimeout = Just 20000000, requestBody = RequestBodyLBS $ encode x }
+  when (?verbose .&. 8 > 0) $ print req
   result <- withManager $ httpLbs req
+  when (?verbose .&. 8 > 0) $ print result
   return ()
 

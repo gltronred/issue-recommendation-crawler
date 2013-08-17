@@ -9,7 +9,8 @@ import qualified Data.ByteString.Char8 as BS
 import Data.Char
 import qualified Data.Map as M
 import qualified Data.Set as S
-import Data.Time.Clock (UTCTime (..))
+import Data.Time.Calendar (fromGregorian)
+import Data.Time.Clock (UTCTime (..),secondsToDiffTime)
 import qualified Data.Text as T
 
 data Output = PrintOutput
@@ -31,6 +32,8 @@ instance ToJSON IssueAddress where
   toJSON (IssueAddress o p i) = object [ "owner" .= o
                                        , "project" .= p
                                        , "id" .= i ]
+
+future = UTCTime (fromGregorian 2030 1 1) (secondsToDiffTime 0)
 
 genId :: IssueAddress -> BS.ByteString
 genId (IssueAddress o p i) = BS.concat [o,"/",p,"/",BS.pack $ show i]
@@ -69,7 +72,7 @@ data Issue = Issue { issNumber :: Int
                    , issBody :: T.Text
                    , issDiscussion :: Int
                    , issQuality :: Double
-                   , issDue :: UTCTime
+                   , issDue :: Maybe UTCTime
                    , issDiscusses :: Int
                    , issTags :: S.Set BS.ByteString
                    } deriving (Eq,Show)
