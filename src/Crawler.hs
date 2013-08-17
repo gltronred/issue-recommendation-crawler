@@ -3,6 +3,7 @@
 module Main where
 
 import Types
+import Network
 import IssueParser
 import ProjectParser
 
@@ -18,7 +19,7 @@ output PrintOutput infos = do
   forM_ infos $ \info -> do
     BS.putStrLn $ BS.concat ["** Issue ", issueOwner info, "/", issueProject info, "/", BS.pack $ show $ issueNumber info]
     print info
-output (SolrOutput address) info = undefined
+output SolrOutput info = sendSolr info
 
 combineInfo :: IssueAddress -> Project -> Issue -> IssueMeta
 combineInfo addr project issue = IssueMeta (genId addr)
@@ -52,9 +53,9 @@ main = do
   args <- getArgs
   let !out = if length args == 2 && args!!1 == "Print"
              then PrintOutput
-             else if length args == 3 && args!!1 == "Solr"
-                  then SolrOutput $ BS.pack $ args!!2
-                  else error "Usage: issue-recommendation-crawler <file-with-projects> [ Print | Solr <address> ]"
+             else if length args == 2 && args!!1 == "Solr"
+                  then SolrOutput
+                  else error "Usage: issue-recommendation-crawler <file-with-projects> [ Print | Solr ]"
       file = args!!0
   withFile file ReadMode $ \f -> do
     content <- BS.hGetContents f

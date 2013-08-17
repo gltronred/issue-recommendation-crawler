@@ -13,7 +13,7 @@ import Data.Time.Clock (UTCTime (..))
 import qualified Data.Text as T
 
 data Output = PrintOutput
-            | SolrOutput { solrAddress :: BS.ByteString } deriving (Eq,Show)
+            | SolrOutput deriving (Eq,Show)
 
 data IssueAddress = IssueAddress { addressOwner :: BS.ByteString
                                  , addressProject :: BS.ByteString

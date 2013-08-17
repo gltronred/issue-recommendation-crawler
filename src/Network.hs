@@ -10,6 +10,7 @@ import Data.Maybe
 import Network.HTTP.Conduit
 import Network.HTTP.Types (statusCode)
 
+solrUrl = "http://cll.niimm.ksu.ru:8080/solr/"
 url = "https://api.github.com/"
 secretToken = "5826a377860cc45943554452a26b9b798aa6cc8b"
 authParam = "?access_token=" ++ secretToken
@@ -26,4 +27,11 @@ generalNetwork path params rErr parseResponse = do
   case statusCode $ responseStatus result of
     200 -> parseResponse $ fromJust $ decode $ responseBody result
     _ -> return rErr
+
+sendSolr :: (ToJSON a) => a -> IO ()
+sendSolr x = do
+  req' <- parseUrl $ solrUrl ++ "update/json?commit=true"
+  let req = req' { responseTimeout = Just 20000000, requestBody = RequestBodyLBS $ encode x }
+  result <- withManager $ httpLbs req
+  return ()
 
