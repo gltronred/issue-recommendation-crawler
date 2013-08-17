@@ -26,7 +26,7 @@ executable issue-recommendation-crawler
                        http-conduit,
                        http-types,
                        time >= 1.4,
-                       github
+                       syb
 
 executable issue-recommendation-service
   hs-source-dirs:      src
@@ -40,7 +40,7 @@ executable issue-recommendation-service
                        http-conduit,
                        http-types,
                        time >= 1.4,
-                       github,
+                       syb,
                        wai,
                        warp,
                        conduit,

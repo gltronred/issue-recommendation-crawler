@@ -1,39 +1,53 @@
-{-# LANGUAGE OverloadedStrings, TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings, DeriveGeneric, ImplicitParams #-}
 
 module ProjectParser where
 
 import Types
+import Network
 
+import Data.Aeson
+import Data.Aeson.TH
 import qualified Data.ByteString.Char8 as BS
+import Data.Char
 import qualified Data.Map as M
 import qualified Data.Set as S
-import Github.Data.Definitions
-import Github.Repos
-import qualified Github.Issues as G
+import Data.Time.Calendar
+import Data.Time.Clock
+import qualified Data.Text as T
+import GHC.Generics
 
-projectInfo :: BS.ByteString -> BS.ByteString -> IO (Either String Project)
+data ProjectResp = PR { size :: Int
+                      , watchers :: Int } deriving (Eq,Show,Generic)
+instance FromJSON ProjectResp
+
+projectInfo :: (?verbose :: Int) => BS.ByteString -> BS.ByteString -> IO (Either BS.ByteString Project)
 projectInfo owner' proj' = let
   owner = BS.unpack owner'
   proj = BS.unpack proj'
   in do
-  elang <- languagesFor owner proj
-  langs <- case elang of
-    Left err -> do
-      putStrLn $ "Error while getting languages: " ++ show err
-      return M.empty
-    Right lang -> return $ M.fromList $ map (\(Language l i) -> (BS.pack l,fromIntegral i)) $ lang
-  eissues <- G.issuesForRepo' (Just auth) owner proj [G.AnyMilestone, G.Open, G.Unassigned]
-  issues <- case eissues of
-    Left err -> do
-      putStrLn $ "Error while getting issues: " ++ show err
-      return []
-    Right is -> return $ map G.issueNumber is
-  erepo <- userRepo owner proj 
-  case erepo of
-    Left err -> do
-      putStrLn $ "Error: " ++ show err
-      return $ Left $ show err
-    Right repo -> let
-      mlang = repoLanguage repo
-      in return $ Right $ Project issues langs S.empty (repoSize repo) (-1) (repoWatchers repo)
+  mpr <- generalNetwork ("repos/" ++ owner ++ "/" ++ proj) Nothing Nothing (return . Just)
+  case mpr of
+    Nothing -> return $ Left "Some error occured"
+    Just pr -> return $ Right $ Project [] M.empty S.empty (size pr) (-1) (watchers pr)
+
+data Label = Label { name :: BS.ByteString } deriving (Eq,Show,Generic,Ord)
+instance FromJSON Label
+
+data IssueResp = IR { number :: Int
+                    , title :: T.Text
+                    , body :: T.Text
+                    , comments :: Int
+                    , labels :: S.Set Label } deriving (Eq,Show,Generic)
+instance FromJSON IssueResp
+
+projectIssueList :: (?verbose :: Int) => BS.ByteString -> BS.ByteString -> IO (Either BS.ByteString [Issue])
+projectIssueList owner' proj' = let
+  owner = BS.unpack owner'
+  proj = BS.unpack proj'
+  future = UTCTime (fromGregorian 2030 1 1) (secondsToDiffTime 0)
+  in do
+    mis <- generalNetwork ("repos/" ++ owner ++ "/" ++ proj ++ "/issues") (Just [("state","open"), ("assignee", "none")]) Nothing (return . Just)
+    case mis of
+      Nothing -> return $ Left "Some error occured"
+      Just is -> return $ Right $ map (\(IR n t b c ls) -> Issue n t b c 0.0 future (-1) $ S.map name ls) is
 

@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, MultiWayIf, BangPatterns #-}
+{-# LANGUAGE OverloadedStrings, BangPatterns, ImplicitParams #-}
 
 module Main where
 
@@ -13,10 +13,9 @@ import qualified Data.Set as S
 import System.Environment
 import System.IO
 
-output :: Output -> IssueMeta -> IO ()
-output PrintOutput info = do
-  BS.putStrLn $ BS.concat ["** Issue ", issueOwner info, "/", issueProject info, "/", BS.pack $ show $ issueNumber info]
-  print info
+output :: Output -> [IssueMeta] -> IO ()
+output PrintOutput infos = do
+  forM_ infos $ \info -> BS.putStrLn $ BS.concat ["** Issue ", issueOwner info, "/", issueProject info, "/", BS.pack $ show $ issueNumber info]
 output (SolrOutput address) info = undefined
 
 combineInfo :: IssueAddress -> Project -> Issue -> IssueMeta
@@ -37,19 +36,15 @@ combineInfo addr project issue = IssueMeta (genId addr)
                                  (issDiscusses issue)
                                  (issTags issue)
 
-parseProject :: Output -> BS.ByteString -> BS.ByteString -> IO ()
+parseProject :: (?verbose :: Int) => Output -> BS.ByteString -> BS.ByteString -> IO ()
 parseProject out owner proj = do
   BS.putStrLn $ BS.concat ["* Ok, crawler, parse `", owner, "/", proj, "'"]
   eproject <- projectInfo owner proj
   case eproject of
-    Left err -> return ()
+    Left err -> BS.putStrLn $ BS.concat ["Error: ", err]
     Right project -> do
       let issues = projectIssues project
-      forM_ issues $ \id -> do
-        eissue <- issueInfo owner proj id
-        case eissue of
-          Left err' -> return ()
-          Right issue -> output out $ combineInfo (IssueAddress owner proj id) project issue
+      output out $ map (\i -> combineInfo (IssueAddress owner proj $ issNumber i) project i) issues
 
 main = do
   args <- getArgs
@@ -68,4 +63,4 @@ main = do
       project = words!!1
       in if BS.head line == '#' 
          then return () 
-         else parseProject out owner project
+         else let ?verbose = 0 in parseProject out owner project

@@ -11,9 +11,6 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 import Data.Time.Clock (UTCTime (..))
 import qualified Data.Text as T
-import qualified Github.Issues as G
-
-auth = G.GithubOAuth "5826a377860cc45943554452a26b9b798aa6cc8b"
 
 data Output = PrintOutput
             | SolrOutput { solrAddress :: BS.ByteString } deriving (Eq,Show)
@@ -59,7 +56,7 @@ data IssueMeta = IssueMeta { issueId :: BS.ByteString
 $(deriveJSON (map toLower . drop 5) ''IssueMeta)
 
 
-data Project = Project { projectIssues :: [Int]
+data Project = Project { projectIssues :: [Issue]
                        , projectLanguages :: M.Map BS.ByteString Double
                        , projectFrameworks :: S.Set BS.ByteString
                        , projectSize :: Int
@@ -67,7 +64,8 @@ data Project = Project { projectIssues :: [Int]
                        , projectWatches :: Int
                        } deriving (Eq,Show)
 
-data Issue = Issue { issTitle :: T.Text
+data Issue = Issue { issNumber :: Int
+                   , issTitle :: T.Text
                    , issBody :: T.Text
                    , issDiscussion :: Int
                    , issQuality :: Double
