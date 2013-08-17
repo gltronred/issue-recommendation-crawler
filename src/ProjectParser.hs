@@ -28,7 +28,7 @@ projectInfo owner' proj' = let
       putStrLn $ "Error while getting issues: " ++ show err
       return []
     Right is -> return $ map G.issueNumber is
-  erepo <- userRepo owner proj
+  erepo <- userRepo owner proj 
   case erepo of
     Left err -> do
       putStrLn $ "Error: " ++ show err
