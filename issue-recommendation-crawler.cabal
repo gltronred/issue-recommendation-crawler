@@ -18,12 +18,33 @@ executable issue-recommendation-crawler
   hs-source-dirs:      src
   main-is:             Crawler.hs
   -- other-modules:       
-  build-depends:       base ==4.6.*,
+  build-depends:       base >= 4.5,
                        containers >= 0.5,
                        bytestring >= 0.10,
                        aeson,
                        text,
                        http-conduit,
                        http-types,
-                       time >= 1.4
+                       time >= 1.4,
+                       github
+
+executable issue-recommendation-service
+  hs-source-dirs:      src
+  main-is:             Service.hs
+  -- other-modules:       
+  build-depends:       base >= 4.5,
+                       containers >= 0.5,
+                       bytestring >= 0.10,
+                       aeson,
+                       text,
+                       http-conduit,
+                       http-types,
+                       time >= 1.4,
+                       github,
+                       wai,
+                       warp,
+                       conduit,
+                       attoparsec-conduit,
+                       transformers,
+                       lifted-base
 

@@ -3,15 +3,51 @@
 module Main where
 
 import Types
+import IssueParser
+import ProjectParser
 
 import Control.Monad (forM_)
 import qualified Data.ByteString.Char8 as BS
+import qualified Data.Map as M
+import qualified Data.Set as S
 import System.Environment
 import System.IO
 
+output :: Output -> IssueMeta -> IO ()
+output PrintOutput info = do
+  BS.putStrLn $ BS.concat ["** Issue ", issueOwner info, "/", issueProject info, "/", BS.pack $ show $ issueNumber info]
+  print info
+output (SolrOutput address) info = undefined
+
+combineInfo :: IssueAddress -> Project -> Issue -> IssueMeta
+combineInfo addr project issue = IssueMeta (genId addr)
+                                 (addressOwner addr)
+                                 (addressProject addr)
+                                 (addressIssueId addr)
+                                 (S.fromAscList $ map fst $ M.toAscList $ projectLanguages project)
+                                 (projectFrameworks project)
+                                 (projectSize project)
+                                 (projectStars project)
+                                 (projectWatches project)
+                                 (issDiscussion issue)
+                                 (issQuality issue)
+                                 (issDue issue)
+                                 (issDiscusses issue)
+                                 (issTags issue)
+
 parseProject :: Output -> BS.ByteString -> BS.ByteString -> IO ()
-parseProject out owner repo = do
-  BS.putStrLn $ BS.concat ["Ok, crawler, parse `", owner, "/", repo, "'"]
+parseProject out owner proj = do
+  BS.putStrLn $ BS.concat ["* Ok, crawler, parse `", owner, "/", proj, "'"]
+  eproject <- projectInfo owner proj
+  case eproject of
+    Left err -> return ()
+    Right project -> do
+      let issues = projectIssues project
+      forM_ issues $ \id -> do
+        eissue <- issueInfo owner proj id
+        case eissue of
+          Left err' -> return ()
+          Right issue -> output out $ combineInfo (IssueAddress owner proj id) project issue
 
 main = do
   args <- getArgs
