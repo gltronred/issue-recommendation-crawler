@@ -49,7 +49,7 @@ JSON output
   "watches": 40,
   "discussion": 100500,
   "quality": 99.9,
-  "due": "2013-08-18T16:00:55",
+  "due": "2013-08-18T16:00:55.581Z",
   "discusses": 10,
   "tags": [
     "bug",
@@ -59,14 +59,14 @@ JSON output
 
 ````
 
-* @issue -- describes issue address (<owner>/<project>/issues/<id>)
-* @languages
-* @frameworks
-* @size -- project size (Kb)
-* @stars
-* @watches
-* @discussion -- discussion length
-* @quality
-* @due
-* @discusses -- how many people discusses issue
-* @tags
+* owner, project, number -- describes issue address (<owner>/<project>/issues/<number>)
+* languages
+* frameworks
+* size -- project size (Kb)
+* stars
+* watches
+* discussion -- discussion length
+* quality
+* due
+* discusses -- how many people discusses issue
+* tags
