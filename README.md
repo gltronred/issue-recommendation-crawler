@@ -2,11 +2,29 @@ issue-recommendation-crawler
 ============================
 
 
-How to build and install
-========================
+How to install and run
+======================
+
+Build: 
 
 ````
 cabal install
+````
+
+Run:
+
+````
+issue-recommendation-crawler <file-with-projects> [Print|Solr <address>]
+````
+
+File with projects has format:
+
+````
+# comments are written after # if needed
+owner1 project1
+owner2 project2
+...
+ownerN projectN
 ````
 
 JSON output
@@ -18,7 +36,7 @@ JSON output
   "issue": {
     "owner": "gltronred",
     "repo": "issue-recommendation-crawler",
-    "number": 1 },
+    "id": 1 },
   "languages": {
     "haskell": 95.1,
     "bash": 4.8,
@@ -41,14 +59,14 @@ JSON output
 
 ````
 
-* issue
-* languages
-* frameworks
-* size
-* stars
-* watches
-* discussion
-* quality
-* due
-* discusses
-* tags
+* @issue -- describes issue address (<owner>/<project>/issues/<id>)
+* @languages
+* @frameworks
+* @size
+* @stars
+* @watches
+* @discussion
+* @quality
+* @due
+* @discusses
+* @tags

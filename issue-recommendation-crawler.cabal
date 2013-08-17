@@ -15,7 +15,15 @@ build-type:          Simple
 cabal-version:       >=1.8
 
 executable issue-recommendation-crawler
-  hs-source-dirs:      src/
+  hs-source-dirs:      src
   main-is:             Crawler.hs
   -- other-modules:       
-  build-depends:       base ==4.6.*
+  build-depends:       base ==4.6.*,
+                       containers >= 0.5,
+                       bytestring >= 0.10,
+                       aeson,
+                       text,
+                       http-conduit,
+                       http-types,
+                       time >= 1.4
+
