@@ -72,3 +72,25 @@ JSON output
 * due
 * discusses -- how many people discusses issue
 * tags
+
+
+User Service
+============
+
+Send JSON object of user and get JSON object of information:
+
+````
+curl -X GET http://78.47.57.21:8080/ --data '{"name":"gltronred","token":"abc"}'
+````
+
+Result should be like:
+
+````
+{"languages":["bash","haskell","unknown"],"frameworks":["aeson","bytestring"]}
+````
+
+or like that:
+
+````
+{"message":"JSONParseException"}
+````
