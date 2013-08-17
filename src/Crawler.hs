@@ -15,7 +15,9 @@ import System.IO
 
 output :: Output -> [IssueMeta] -> IO ()
 output PrintOutput infos = do
-  forM_ infos $ \info -> BS.putStrLn $ BS.concat ["** Issue ", issueOwner info, "/", issueProject info, "/", BS.pack $ show $ issueNumber info]
+  forM_ infos $ \info -> do
+    BS.putStrLn $ BS.concat ["** Issue ", issueOwner info, "/", issueProject info, "/", BS.pack $ show $ issueNumber info]
+    print info
 output (SolrOutput address) info = undefined
 
 combineInfo :: IssueAddress -> Project -> Issue -> IssueMeta

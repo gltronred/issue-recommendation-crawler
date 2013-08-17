@@ -28,7 +28,14 @@ projectInfo owner' proj' = let
   mpr <- generalNetwork ("repos/" ++ owner ++ "/" ++ proj) Nothing Nothing (return . Just)
   case mpr of
     Nothing -> return $ Left "Some error occured"
-    Just pr -> return $ Right $ Project [] M.empty S.empty (size pr) (-1) (watchers pr)
+    Just pr -> do
+      eis <- projectIssueList owner' proj'
+      is <- case eis of
+        Left err -> do
+          BS.putStrLn $ BS.concat ["Some error occured: ", err]
+          return []
+        Right i -> return i
+      return $ Right $ Project is M.empty S.empty (size pr) (-1) (watchers pr)
 
 data Label = Label { name :: BS.ByteString } deriving (Eq,Show,Generic,Ord)
 instance FromJSON Label
