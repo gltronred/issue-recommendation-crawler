@@ -24,6 +24,8 @@ combineInfo addr project issue = IssueMeta (genId addr)
                                  (addressOwner addr)
                                  (addressProject addr)
                                  (addressIssueId addr)
+                                 (issTitle issue)
+                                 (issBody issue)
                                  (S.fromAscList $ map fst $ M.toAscList $ projectLanguages project)
                                  (projectFrameworks project)
                                  (projectSize project)
@@ -51,9 +53,11 @@ parseProject out owner proj = do
 
 main = do
   args <- getArgs
-  let !out = if | length args == 2 && args!!1 == "Print" -> PrintOutput
-                | length args == 3 && args!!1 == "Solr" -> SolrOutput $ BS.pack $ args!!2
-                | True -> error "Usage: issue-recommendation-crawler <file-with-projects> [ Print | Solr <address> ]"
+  let !out = if length args == 2 && args!!1 == "Print"
+             then PrintOutput
+             else if length args == 3 && args!!1 == "Solr"
+                  then SolrOutput $ BS.pack $ args!!2
+                  else error "Usage: issue-recommendation-crawler <file-with-projects> [ Print | Solr <address> ]"
       file = args!!0
   withFile file ReadMode $ \f -> do
     content <- BS.hGetContents f

@@ -10,6 +10,7 @@ import Data.Char
 import qualified Data.Map as M
 import qualified Data.Set as S
 import Data.Time.Clock (UTCTime (..))
+import qualified Data.Text as T
 import qualified Github.Issues as G
 
 auth = G.GithubOAuth "5826a377860cc45943554452a26b9b798aa6cc8b"
@@ -41,6 +42,8 @@ data IssueMeta = IssueMeta { issueId :: BS.ByteString
                            , issueOwner :: BS.ByteString
                            , issueProject :: BS.ByteString
                            , issueNumber :: Int
+                           , issueTitle :: T.Text
+                           , issueBody :: T.Text
                            , issueLanguages :: S.Set BS.ByteString
                            , issueFrameworks :: S.Set BS.ByteString
                            , issueSize :: Int
@@ -64,7 +67,9 @@ data Project = Project { projectIssues :: [Int]
                        , projectWatches :: Int
                        } deriving (Eq,Show)
 
-data Issue = Issue { issDiscussion :: Int
+data Issue = Issue { issTitle :: T.Text
+                   , issBody :: T.Text
+                   , issDiscussion :: Int
                    , issQuality :: Double
                    , issDue :: UTCTime
                    , issDiscusses :: Int
@@ -77,4 +82,10 @@ data User = User { userLanguages :: S.Set BS.ByteString
 
 $(deriveJSON (map toLower . drop 4) ''User)
 
+
+data UserIn = UserIn { userInName :: BS.ByteString
+                     , userInToken :: BS.ByteString
+                     } deriving (Eq,Show)
+
+$(deriveJSON (map toLower . drop 6) ''UserIn)
 
