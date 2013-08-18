@@ -2,4 +2,5 @@ gltronred issue-recomendation
 gltronred issue-recommendation-crawler
 jrpathfinder extracting-plugin
 nzhiltsov lucene-mlm
+rgareev newsfeeds-crawler
 rails rails
