@@ -5,4 +5,4 @@ jrpathfinder extracting-plugin
 nzhiltsov lucene-mlm
 rgareev newsfeeds-crawler
 behas lucene-skos
-behas/ese2edm
+behas ese2edm
