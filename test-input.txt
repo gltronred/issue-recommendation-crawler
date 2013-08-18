@@ -3,4 +3,5 @@ gltronred issue-recommendation-crawler
 jrpathfinder extracting-plugin
 nzhiltsov lucene-mlm
 rgareev newsfeeds-crawler
+behas lucene-skos
 rails rails
