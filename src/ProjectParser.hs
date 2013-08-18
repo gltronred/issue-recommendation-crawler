@@ -27,7 +27,7 @@ projectInfo owner' proj' = let
   owner = BS.unpack owner'
   proj = BS.unpack proj'
   in do
-  mpr <- generalNetwork ("repos/" ++ owner ++ "/" ++ proj) Nothing Nothing (return . Just)
+  mpr <- generalNetwork ("repos/" ++ owner ++ "/" ++ proj) [] Nothing (return . Just)
   case mpr of
     Nothing -> return $ Left "Some error occured"
     Just pr -> do
@@ -64,7 +64,7 @@ projectIssueList owner' proj' mpage total = let
   owner = BS.unpack owner'
   proj = BS.unpack proj'
   in do
-    mis <- generalNetwork ("repos/" ++ owner ++ "/" ++ proj ++ "/issues") (Just [("state","open"), ("assignee", "none")]) Nothing (return . Just)
+    mis <- generalNetwork ("repos/" ++ owner ++ "/" ++ proj ++ "/issues") [("state","open"), ("assignee", "none")] Nothing (return . Just)
     case mis of
       Nothing -> return $ Left "Some error occured"
       Just is -> let
@@ -81,5 +81,5 @@ projectLangs owner' proj' = let
   owner = BS.unpack owner'
   proj = BS.unpack proj'
   in do
-    generalNetwork ("repos/" ++ owner ++ "/" ++ proj ++ "/languages") Nothing Nothing (return . Just)
+    generalNetwork ("repos/" ++ owner ++ "/" ++ proj ++ "/languages") [] Nothing (return . Just)
 

@@ -27,7 +27,8 @@ executable issue-recommendation-crawler
                        http-types,
                        time >= 1.4,
                        syb,
-                       pcre-light
+                       regex-posix,
+                       array
 
 executable issue-recommendation-service
   hs-source-dirs:      src
@@ -48,5 +49,6 @@ executable issue-recommendation-service
                        attoparsec-conduit,
                        transformers,
                        lifted-base,
-                       pcre-light
+                       regex-posix,
+                       array
 

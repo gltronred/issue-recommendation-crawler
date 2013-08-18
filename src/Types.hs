@@ -12,7 +12,7 @@ import qualified Data.Set as S
 import Data.Time.Calendar (fromGregorian)
 import Data.Time.Clock (UTCTime (..),secondsToDiffTime)
 import qualified Data.Text as T
-import Text.Regex.PCRE.Light (Regex (..))
+import Text.Regex.Posix (Regex (..))
 
 data Output = PrintOutput
             | SolrOutput deriving (Eq,Show)
@@ -92,6 +92,5 @@ data UserIn = UserIn { userInName :: BS.ByteString
 $(deriveJSON (map toLower . drop 6) ''UserIn)
 
 
-data Framework = Framework { frameworkName :: BS.ByteString
-                           , frameworkMask :: String
-                           , frameworkRegexp :: Regex } deriving (Eq,Show)
+data Framework = Framework { frameworkMask :: Regex
+                           , frameworkRegexp :: Regex }

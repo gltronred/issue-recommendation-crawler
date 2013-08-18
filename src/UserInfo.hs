@@ -22,7 +22,7 @@ userRepos :: (?verbose :: Int) => BS.ByteString -> BS.ByteString -> IO (Maybe [B
 userRepos owner' token = let
   owner = BS.unpack owner'
   in do
-  generalNetwork ("users/" ++ owner ++ "/repos") (Just [("access_token",BS.unpack token)]) Nothing (return . Just . map name)
+  generalNetwork ("users/" ++ owner ++ "/repos") [("access_token",BS.unpack token)] Nothing (return . Just . map name)
 
 userInfo :: (?verbose :: Int) => BS.ByteString -> BS.ByteString -> IO (Maybe User)
 userInfo owner token = do
