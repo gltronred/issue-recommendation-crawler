@@ -6,7 +6,6 @@ nzhiltsov lucene-mlm
 rgareev newsfeeds-crawler
 behas lucene-skos
 behas ese2edm
-rails rails
 defunkt github-gem
 pivotal jasmine-gem
 Instagram instagram-ruby-gem
