@@ -32,7 +32,7 @@ projectInfo owner' proj' = let
   case mpr of
     Nothing -> return $ Left "Some error occured"
     Just pr -> do
-      eis <- projectIssueList owner' proj' Nothing 1
+      eis <- projectIssueList owner' proj' (Just 1) $ open_issues pr`div`20
       is <- case eis of
         Left err -> do
           BS.putStrLn err
@@ -66,17 +66,21 @@ projectIssueList owner' proj' mpage total = let
   owner = BS.unpack owner'
   proj = BS.unpack proj'
   in do
-    mis <- generalNetwork ("repos/" ++ owner ++ "/" ++ proj ++ "/issues") [("state","open"), ("assignee", "none")] Nothing (return . Just)
+    mis <- generalNetwork ("repos/" ++ owner ++ "/" ++ proj ++ "/issues") [("page", if isJust mpage then show $ fromJust mpage else "1"), ("state","open"), ("assignee", "none")] Nothing (return . Just)
     case mis of
       Nothing -> return $ Left "Some error occured"
       Just is -> let
         getDue mm = if isJust mm then Just $ due_on $ fromJust mm else Nothing
         in do
           -- -- get rest of the list
-          -- let next = case mpage of
-          --   Just pg -> projectIssueList owner' proj' (Just $ pg+1) total
-          --   Nothing -> 
-          return $ Right $ map (\(IR n t b c mm ls) -> Issue n t b c 0.0 (getDue mm) (-1) $ S.map name ls) is
+          -- Right next <- case mpage of
+          --   Just pg -> if pg<total
+          --              then projectIssueList owner' proj' (Just $ pg+1) total
+          --              else return $ Right []
+          --   Nothing -> if 2<total
+          --              then projectIssueList owner' proj' (Just 2) total
+          --              else return $ Right []
+          return $ Right $ (map (\(IR n t b c mm ls) -> Issue n t b c 0.0 (getDue mm) (-1) $ S.map name ls) is)
 
 projectLangs :: (?verbose :: Int) => BS.ByteString -> BS.ByteString -> IO (Maybe (M.Map BS.ByteString Double))
 projectLangs owner' proj' = let

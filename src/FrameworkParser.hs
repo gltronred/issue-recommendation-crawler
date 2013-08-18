@@ -24,12 +24,14 @@ data Tree = Tree { path :: BS.ByteString
 instance A.FromJSON Tree
 instance A.ToJSON Tree
 
-mkRegex :: CompOption -> ExecOption -> BS.ByteString -> Regex
-mkRegex cf ef str = makeRegex str
+mkRegex :: BS.ByteString -> Regex
+mkRegex str = makeRegex str
 
 packageMgrs :: [Framework]
-packageMgrs = [Framework (mkRegex compBlank execBlank "^Gemfile$") (mkRegex compNewline execBlank "gem '([^']*)'")
-             ]
+packageMgrs = [Framework (mkRegex "^Gemfile$") (mkRegex "gem '([^']*)'")
+              ,Framework (mkRegex ".*\\.cabal") (mkRegex "\\bbuild-depends\\b[\\:].*[\\w]+,(?=[^,]+$)")
+              ,Framework (mkRegex "pom\\.xml") (mkRegex "<dependencies\\b[^>]*>(.*?)</dependencies>")
+              ]
 
 hasFile :: Regex -> [Tree] -> Maybe BS.ByteString
 hasFile mask [] = Nothing
