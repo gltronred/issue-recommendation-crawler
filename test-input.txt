@@ -1,9 +1,11 @@
 gltronred issue-recomendation
 gltronred issue-recommendation-crawler
+rails rails
 jrpathfinder extracting-plugin
 nzhiltsov lucene-mlm
 rgareev newsfeeds-crawler
 behas lucene-skos
+behas ese2edm
 rails rails
 defunkt github-gem
 pivotal jasmine-gem
