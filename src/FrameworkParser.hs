@@ -32,7 +32,7 @@ packageMgrs = [Framework (mkRegex "^Gemfile$") (mkRegex "gem '([^']*)'")
 --              ,Framework (mkRegex ".*\\.cabal") (mkRegex "\\bbuild-depends\\b[\\:].*[\\w]+,(?=[^,]+$)")
               ,Framework (mkRegex "^pom\\.xml$") (mkRegex "<artifactId>(.*)</artifactId>")
               ,Framework (mkRegex "^build\\.xml$") (mkRegex "<dependency.* artifactId=\"(.*)\" ")
-              ,Framework (mkRegex "^.*\\.sbt$") (mkRegex "\+= [^%]* % \"(.*)\"")
+              ,Framework (mkRegex "^.*\\.sbt$") (mkRegex "\\+= [^%]* % \"(.*)\"")
               ]
 
 hasFile :: Regex -> [Tree] -> Maybe BS.ByteString
