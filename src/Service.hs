@@ -55,6 +55,7 @@ modValue input = let
   in do
     putStrLn $ "Get user info for " ++ show input
     ui <- userInfo (userInName input) (userInToken input)
+    print ui
     return $ case ui of
       Nothing -> User S.empty S.empty
       Just u -> u
