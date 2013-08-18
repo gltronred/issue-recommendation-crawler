@@ -5,3 +5,7 @@ nzhiltsov lucene-mlm
 rgareev newsfeeds-crawler
 behas lucene-skos
 rails rails
+defunkt github-gem
+pivotal jasmine-gem
+Instagram instagram-ruby-gem
+ryanb cancan
