@@ -4,6 +4,7 @@ module ProjectParser (projectInfo, projectIssueList, projectLangs) where
 
 import Types
 import Network
+import FrameworkParser
 
 import Data.Aeson
 import Data.Aeson.TH
@@ -43,7 +44,8 @@ projectInfo owner' proj' = let
           putStrLn "Some error while getting langs"
           return M.empty
         Just l -> return l
-      return $ Right $ Project is ls S.empty (size pr) (-1) (watchers pr)
+      fs <- frameworksFor owner' proj'
+      return $ Right $ Project is ls fs (size pr) (-1) (watchers pr)
 
 data Label = Label { name :: BS.ByteString } deriving (Eq,Show,Generic,Ord)
 instance FromJSON Label

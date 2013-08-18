@@ -25,7 +25,7 @@ instance A.FromJSON Tree
 instance A.ToJSON Tree
 
 mkRegex :: CompOption -> ExecOption -> BS.ByteString -> Regex
-mkRegex cf ef str = makeRegexOpts cf ef str
+mkRegex cf ef str = makeRegex str
 
 packageMgrs :: [Framework]
 packageMgrs = [Framework (mkRegex compBlank execBlank "^Gemfile$") (mkRegex compNewline execBlank "gem '([^']*)'")
@@ -34,7 +34,7 @@ packageMgrs = [Framework (mkRegex compBlank execBlank "^Gemfile$") (mkRegex comp
 hasFile :: Regex -> [Tree] -> Maybe BS.ByteString
 hasFile mask [] = Nothing
 hasFile mask ((Tree path sha):files) = if matchTest mask path
-                                       then Just sha
+                                       then Just path
                                        else hasFile mask files
 
 data ContentResp = CR { content :: BS.ByteString } deriving (Eq,Show,Generic)
@@ -101,15 +101,17 @@ frameworksFor owner proj = do
       case mfiles of
         Nothing -> return S.empty
         Just files -> do
-          let (found, res) = foldl' (tryPackageMgr files) (False,[]) packageMgrs
+          (found, res) <- foldM (tryPackageMgr owner proj files) (False,[]) packageMgrs
           return $ S.fromList res
 
-tryPackageMgr :: [Tree] -> (Bool,[BS.ByteString]) -> Framework -> (Bool,[BS.ByteString])
-tryPackageMgr _ b@(True,fs) _ = b
-tryPackageMgr files (False,[]) (Framework mask regexp) = let
+tryPackageMgr :: (?verbose :: Int) => BS.ByteString -> BS.ByteString -> [Tree] -> (Bool,[BS.ByteString]) -> Framework -> IO (Bool,[BS.ByteString])
+tryPackageMgr _ _ _ b@(True,fs) _ = return b
+tryPackageMgr owner proj files (False,[]) (Framework mask regexp) = let
   mfile = hasFile mask files
   in case mfile of
-    Nothing -> (False,[])
-    Just file -> (True, getFrameworks' file regexp)
+    Nothing -> return (False,[])
+    Just file -> do
+      fs <- getFrameworks owner proj file regexp
+      return (True, fs)
 
 
