@@ -29,7 +29,7 @@ mkRegex str = makeRegex str
 
 packageMgrs :: [Framework]
 packageMgrs = [Framework (mkRegex "^Gemfile$") (mkRegex "gem '([^']*)'")
-              ,Framework (mkRegex ".*\\.cabal") (mkRegex "\\bbuild-depends\\b[\\:].*[\\w]+,(?=[^,]+$)")
+--              ,Framework (mkRegex ".*\\.cabal") (mkRegex "\\bbuild-depends\\b[\\:].*[\\w]+,(?=[^,]+$)")
               ,Framework (mkRegex "pom\\.xml") (mkRegex "<dependencies\\b[^>]*>(.*?)</dependencies>")
               ]
 
